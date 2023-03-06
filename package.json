@@ -1,0 +1,26 @@
+{
+  "name": "bizzlor",
+  "version": "1.0.0",
+  "description": "Content Management System for tracking employees",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/J3rkStore/bizzlor.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/J3rkStore/bizzlor/issues"
+  },
+  "homepage": "https://github.com/J3rkStore/bizzlor#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "jshint": "^2.12.0",
+    "mysql2": "^2.2.5",
+    "inquirer": "8.2.4"
+  }
+}
