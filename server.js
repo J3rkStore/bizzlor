@@ -1,6 +1,7 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql2");
 const cTable = require("console.table");
+const prom = require("mysql2/promise");
 
 //const PORT = process.env.PORT || 3001;
 //const app = express();
@@ -209,6 +210,123 @@ VALUES (${data.roleID}, '${data.firstName}', '${data.lastName}', ${data.managerI
   });
 }
 
+// function updateEmployeeRole() {
+//   db.query(`UPDATE employees SET role_id = 1
+//   WHERE first_name ='H. Lorenzo';`);
+// }
+
+// function updateEmployeeRole() {
+//   db.query(`UPDATE employees SET role_id = 2
+//   WHERE first_name ='H. Lorenzo' AND last_name = 'St. Magnifico';`);
+// }
+
+// let roleList = [];
+// db.query(`SELECT * FROM roles;`, (er, res) => {
+//   if (er) {
+//     console.log(er);
+//   }
+//   for (let r = 0; r < res.length; i++) {
+//     roleList.push(res[r].id + " - " + res[r].title);
+//   }
+// });
+
+/////////////////////////////////////////////////////////////////////
+
+function updateEmployeeRole() {
+  db.query(`SELECT * FROM employees;`, (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log(result[0].first_name);
+    let employeeList = [];
+    for (let i = 0; i < result.length; i++) {
+      console.log(result[i].first_name + " " + result[i].last_name);
+      employeeList.push(result[i].first_name + " - " + result[i].last_name);
+    }
+
+    console.log(employeeList);
+    inquirer
+      .prompt([
+        {
+          type: "list",
+          name: "employeeSelect",
+          message: "select an employee to update",
+          choices: employeeList,
+        },
+        {
+          type: "number",
+          name: "roleID",
+          message:
+            "enter the role ID number you would like to assign to the employee",
+        },
+      ])
+      .then((data) => {
+        console.log(data.employeeSelect);
+        const empFirstLast = data.employeeSelect.split(" - ");
+        console.log(empFirstLast);
+        const empFirst = empFirstLast[0];
+        console.log(empFirst);
+        const empLast = empFirstLast[1];
+        console.log(empLast);
+        db.query(`UPDATE employees SET role_id = ${data.roleID}
+      WHERE first_name = "${empFirst}" AND last_name = "${empLast}";`);
+      });
+  });
+}
+
+// function updateEmployeeRole() {
+//   db.query(
+//     `
+//   SELECT e.id AS Employee_ID, e.first_name, e.last_name, roles.title, e.role_id, e.manager_id, m.first_name AS manager_name, departments.dept_name
+//   FROM employees e
+//   LEFT JOIN employees m ON m.id = e.manager_id
+//   LEFT JOIN roles ON e.role_id = roles.id
+//   LEFT JOIN departments ON roles.department_id = departments.id;
+//   `,
+//     (err, result) => {
+//       if (err) {
+//         console.log(err);
+//       }
+//       console.log(result[0].first_name);
+//       let employeeList = [];
+//       //let roleList = [];
+//       for (let i = 0; i < result.length; i++) {
+//         console.log(result[i].first_name + " " + result[i].last_name);
+//         employeeList.push(result[i].first_name + " - " + result[i].last_name);
+//         //roleList.push(result[i].role_ID + " - " + result[i].title);
+//       }
+
+//       console.log(employeeList);
+//       inquirer
+//         .prompt([
+//           {
+//             type: "list",
+//             name: "employeeSelect",
+//             message: "select an employee to update",
+//             choices: employeeList,
+//           },
+//           // {
+//           //   type: "list",
+//           //   name: "roleSelect",
+//           //   message: "select a role for the employee",
+//           //   choices: roleList,
+//           // },
+//           {}
+//         ])
+//         .then((data) => {
+//           const empFirstLast = data.employeeSelect.split(" - ");
+//           const empFirst = empFirstLast[0];
+//           const empLast = empFirstLast[1];
+//           const roleData = data.roleSelect.split(" - ");
+//           const roleDID = roleData[0];
+//           const roleTitle = roleData[1];
+//           db.query(`UPDATE employees SET role_id = ${roleDID}
+//       WHERE first_name = "${empFirst}" AND last_name = "${empLast}";`);
+//         });
+//     }
+//   );
+// }
+
 inquirer.prompt(mainprompt).then(function (data) {
   switch (data.main) {
     case "view all departments":
@@ -230,6 +348,7 @@ inquirer.prompt(mainprompt).then(function (data) {
       addEmployee();
       break;
     case "update an employee role":
+      updateEmployeeRole();
       break;
   }
 });
