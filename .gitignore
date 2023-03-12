@@ -1,3 +1,6 @@
 node_modules/
 .DS_Store/
 package-lock.json
+db/query.sql
+db/qry.sql
+db/qqrryy.sql

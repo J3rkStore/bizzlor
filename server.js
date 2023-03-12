@@ -6,6 +6,7 @@ const prom = require("mysql2/promise");
 //const PORT = process.env.PORT || 3001;
 //const app = express();
 
+//questions for the main prompt:
 const mainprompt = [
   {
     type: "list",
@@ -23,6 +24,7 @@ const mainprompt = [
   },
 ];
 
+//allows server.js to interact with sql database
 const db = mysql.createConnection(
   {
     host: "localhost",
@@ -35,42 +37,7 @@ const db = mysql.createConnection(
 
 //db.query(`source db/schema.sql`);
 
-function addEmployees() {
-  db.query(
-    `
-    INSERT INTO employees (department_id, employee_name)
-    VALUES (1, "Dave A"),
-    (2, 'Dave B'),
-    (4, 'Dave C'),
-    (3, 'H. Lorenzo St. Magnifico')
-    `,
-    (err, result) => {
-      if (err) {
-        console.log(err);
-      }
-      console.log(result);
-    }
-  );
-}
-
-function addDepartments() {
-  db.query(
-    `
-        INSERT INTO departments (dept_name)
-VALUES ('Developers'),
-('Cleaning'),
-('Magic'),
-('Accounting');
-        `,
-    (err, result) => {
-      if (err) {
-        console.log(err);
-      }
-      console.log(result);
-    }
-  );
-}
-
+//SELF JOIN on display with the below function.  This was a struggle.  My eternal gratitude to Senpai Kayvon for helping me figure this one out
 function showEmployees() {
   db.query(
     `
@@ -210,28 +177,6 @@ VALUES (${data.roleID}, '${data.firstName}', '${data.lastName}', ${data.managerI
   });
 }
 
-// function updateEmployeeRole() {
-//   db.query(`UPDATE employees SET role_id = 1
-//   WHERE first_name ='H. Lorenzo';`);
-// }
-
-// function updateEmployeeRole() {
-//   db.query(`UPDATE employees SET role_id = 2
-//   WHERE first_name ='H. Lorenzo' AND last_name = 'St. Magnifico';`);
-// }
-
-// let roleList = [];
-// db.query(`SELECT * FROM roles;`, (er, res) => {
-//   if (er) {
-//     console.log(er);
-//   }
-//   for (let r = 0; r < res.length; i++) {
-//     roleList.push(res[r].id + " - " + res[r].title);
-//   }
-// });
-
-/////////////////////////////////////////////////////////////////////
-
 function updateEmployeeRole() {
   db.query(`SELECT * FROM employees;`, (err, result) => {
     if (err) {
@@ -273,59 +218,6 @@ function updateEmployeeRole() {
       });
   });
 }
-
-// function updateEmployeeRole() {
-//   db.query(
-//     `
-//   SELECT e.id AS Employee_ID, e.first_name, e.last_name, roles.title, e.role_id, e.manager_id, m.first_name AS manager_name, departments.dept_name
-//   FROM employees e
-//   LEFT JOIN employees m ON m.id = e.manager_id
-//   LEFT JOIN roles ON e.role_id = roles.id
-//   LEFT JOIN departments ON roles.department_id = departments.id;
-//   `,
-//     (err, result) => {
-//       if (err) {
-//         console.log(err);
-//       }
-//       console.log(result[0].first_name);
-//       let employeeList = [];
-//       //let roleList = [];
-//       for (let i = 0; i < result.length; i++) {
-//         console.log(result[i].first_name + " " + result[i].last_name);
-//         employeeList.push(result[i].first_name + " - " + result[i].last_name);
-//         //roleList.push(result[i].role_ID + " - " + result[i].title);
-//       }
-
-//       console.log(employeeList);
-//       inquirer
-//         .prompt([
-//           {
-//             type: "list",
-//             name: "employeeSelect",
-//             message: "select an employee to update",
-//             choices: employeeList,
-//           },
-//           // {
-//           //   type: "list",
-//           //   name: "roleSelect",
-//           //   message: "select a role for the employee",
-//           //   choices: roleList,
-//           // },
-//           {}
-//         ])
-//         .then((data) => {
-//           const empFirstLast = data.employeeSelect.split(" - ");
-//           const empFirst = empFirstLast[0];
-//           const empLast = empFirstLast[1];
-//           const roleData = data.roleSelect.split(" - ");
-//           const roleDID = roleData[0];
-//           const roleTitle = roleData[1];
-//           db.query(`UPDATE employees SET role_id = ${roleDID}
-//       WHERE first_name = "${empFirst}" AND last_name = "${empLast}";`);
-//         });
-//     }
-//   );
-// }
 
 inquirer.prompt(mainprompt).then(function (data) {
   switch (data.main) {
