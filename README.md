@@ -22,7 +22,9 @@ clone the repo and install dependencies by opening a command line from the root 
 
 ## Usage
 
-the databases with need to be esablished with mysql by running the db/schema.sql file and then db/seeds.sql to seed the tables. Afterwords, you can launch into prompts by calling server.js. You'll be prompted to make selections. If you need to add an employee make sure, you look at roles first to see what IDs correspond with the role you want to assign. Same advice for changing the role of an emloyee. Furthermore, make sure to take note of department IDs before adding a new role
+The databases with need to be esablished with mysql by running the db/schema.sql file and then db/seeds.sql to seed the tables. Afterwords, you can launch into prompts by calling server.js. You'll be prompted to make selections. If you need to add an employee make sure, you look at roles first to see what IDs correspond with the role you want to assign. Same advice for changing the role of an emloyee. Furthermore, make sure to take note of department IDs before adding a new role
+
+[Demo Video](https://drive.google.com/file/d/1NuQzS8CXqLJmbr7_t7jtPawJqbllPo1h/view)
 
 ## License
 
@@ -45,5 +47,3 @@ Build a fork if you desire
 [J3rkStore on GitHub](https://github.com/J3rkStore)
 
 Email: taran.leu@outlook.com
-
-taran.leu@outlook.com
