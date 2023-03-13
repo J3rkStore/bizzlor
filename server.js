@@ -1,11 +1,13 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql2");
 const cTable = require("console.table");
+//keeping the prom const her simply for my own future reference so I can learn more about using this
 const prom = require("mysql2/promise");
 
 //const PORT = process.env.PORT || 3001;
 //const app = express();
 
+//questions for the main prompt:
 const mainprompt = [
   {
     type: "list",
@@ -23,6 +25,7 @@ const mainprompt = [
   },
 ];
 
+//allows server.js to interact with sql database biz_db
 const db = mysql.createConnection(
   {
     host: "localhost",
@@ -35,42 +38,8 @@ const db = mysql.createConnection(
 
 //db.query(`source db/schema.sql`);
 
-function addEmployees() {
-  db.query(
-    `
-    INSERT INTO employees (department_id, employee_name)
-    VALUES (1, "Dave A"),
-    (2, 'Dave B'),
-    (4, 'Dave C'),
-    (3, 'H. Lorenzo St. Magnifico')
-    `,
-    (err, result) => {
-      if (err) {
-        console.log(err);
-      }
-      console.log(result);
-    }
-  );
-}
-
-function addDepartments() {
-  db.query(
-    `
-        INSERT INTO departments (dept_name)
-VALUES ('Developers'),
-('Cleaning'),
-('Magic'),
-('Accounting');
-        `,
-    (err, result) => {
-      if (err) {
-        console.log(err);
-      }
-      console.log(result);
-    }
-  );
-}
-
+//SELF JOIN on display with the below function.  This was a struggle.  My eternal gratitude to Senpai Kayvon for helping me figure this one out
+//info at https://www.devart.com/dbforge/sql/sqlcomplete/self-join-in-sql-server.html
 function showEmployees() {
   db.query(
     `
@@ -89,6 +58,7 @@ function showEmployees() {
   );
 }
 
+//joins roles and departments tables
 function showRoles() {
   db.query(
     `
@@ -106,6 +76,7 @@ ON roles.department_id = departments.id;
   );
 }
 
+//shows departments
 function showDepartments() {
   db.query(`SELECT * FROM departments;`, (err, result) => {
     if (err) {
@@ -115,6 +86,7 @@ function showDepartments() {
   });
 }
 
+//adds department to departments table
 function addDepartment() {
   const deptPrompt = [
     { type: "input", name: "name", message: "enter department name" },
@@ -135,6 +107,7 @@ function addDepartment() {
   });
 }
 
+//adds role to roles table
 function addRole() {
   const rolePrompt = [
     {
@@ -170,6 +143,7 @@ VALUES (${data.deptID}, '${data.name}', ${data.salary});
   });
 }
 
+//adds employee to employees table
 function addEmployee() {
   const employeePrompt = [
     {
@@ -210,41 +184,20 @@ VALUES (${data.roleID}, '${data.firstName}', '${data.lastName}', ${data.managerI
   });
 }
 
-// function updateEmployeeRole() {
-//   db.query(`UPDATE employees SET role_id = 1
-//   WHERE first_name ='H. Lorenzo';`);
-// }
-
-// function updateEmployeeRole() {
-//   db.query(`UPDATE employees SET role_id = 2
-//   WHERE first_name ='H. Lorenzo' AND last_name = 'St. Magnifico';`);
-// }
-
-// let roleList = [];
-// db.query(`SELECT * FROM roles;`, (er, res) => {
-//   if (er) {
-//     console.log(er);
-//   }
-//   for (let r = 0; r < res.length; i++) {
-//     roleList.push(res[r].id + " - " + res[r].title);
-//   }
-// });
-
-/////////////////////////////////////////////////////////////////////
-
+//changes an employee role
+//note to self: find the time to RREEEAAALLY understand async-await and promises
 function updateEmployeeRole() {
   db.query(`SELECT * FROM employees;`, (err, result) => {
     if (err) {
       console.log(err);
     }
-    console.log(result[0].first_name);
+
+    //empty array to add employees into with the below for loop
     let employeeList = [];
     for (let i = 0; i < result.length; i++) {
-      console.log(result[i].first_name + " " + result[i].last_name);
       employeeList.push(result[i].first_name + " - " + result[i].last_name);
     }
 
-    console.log(employeeList);
     inquirer
       .prompt([
         {
@@ -261,72 +214,20 @@ function updateEmployeeRole() {
         },
       ])
       .then((data) => {
-        console.log(data.employeeSelect);
         const empFirstLast = data.employeeSelect.split(" - ");
-        console.log(empFirstLast);
+
         const empFirst = empFirstLast[0];
-        console.log(empFirst);
+
         const empLast = empFirstLast[1];
-        console.log(empLast);
+
         db.query(`UPDATE employees SET role_id = ${data.roleID}
       WHERE first_name = "${empFirst}" AND last_name = "${empLast}";`);
       });
   });
 }
 
-// function updateEmployeeRole() {
-//   db.query(
-//     `
-//   SELECT e.id AS Employee_ID, e.first_name, e.last_name, roles.title, e.role_id, e.manager_id, m.first_name AS manager_name, departments.dept_name
-//   FROM employees e
-//   LEFT JOIN employees m ON m.id = e.manager_id
-//   LEFT JOIN roles ON e.role_id = roles.id
-//   LEFT JOIN departments ON roles.department_id = departments.id;
-//   `,
-//     (err, result) => {
-//       if (err) {
-//         console.log(err);
-//       }
-//       console.log(result[0].first_name);
-//       let employeeList = [];
-//       //let roleList = [];
-//       for (let i = 0; i < result.length; i++) {
-//         console.log(result[i].first_name + " " + result[i].last_name);
-//         employeeList.push(result[i].first_name + " - " + result[i].last_name);
-//         //roleList.push(result[i].role_ID + " - " + result[i].title);
-//       }
-
-//       console.log(employeeList);
-//       inquirer
-//         .prompt([
-//           {
-//             type: "list",
-//             name: "employeeSelect",
-//             message: "select an employee to update",
-//             choices: employeeList,
-//           },
-//           // {
-//           //   type: "list",
-//           //   name: "roleSelect",
-//           //   message: "select a role for the employee",
-//           //   choices: roleList,
-//           // },
-//           {}
-//         ])
-//         .then((data) => {
-//           const empFirstLast = data.employeeSelect.split(" - ");
-//           const empFirst = empFirstLast[0];
-//           const empLast = empFirstLast[1];
-//           const roleData = data.roleSelect.split(" - ");
-//           const roleDID = roleData[0];
-//           const roleTitle = roleData[1];
-//           db.query(`UPDATE employees SET role_id = ${roleDID}
-//       WHERE first_name = "${empFirst}" AND last_name = "${empLast}";`);
-//         });
-//     }
-//   );
-// }
-
+//very handy to finally understand switch cases.  data.main refers to the inquirer prompt in const mainPrompt with name: main
+// info at https://www.w3schools.com/js/js_switch.asp
 inquirer.prompt(mainprompt).then(function (data) {
   switch (data.main) {
     case "view all departments":
