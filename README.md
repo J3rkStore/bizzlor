@@ -4,7 +4,10 @@
 
 ## Description
 
-Employee Database Tracker
+Employee Database Tracker built with MySQL
+
+![image](https://github.com/J3rkStore/bizzlor/assets/59859758/01e845dd-dda6-4f7f-a6c8-e7299abda06a)
+
 
 ## Table of Contents
 
